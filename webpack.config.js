@@ -20,9 +20,9 @@ if (fileSystem.existsSync(secretsPath)) {
 
 var options = {
   entry: {
-    popup: path.join(__dirname, "src", "js", "popup.js"),
-    options: path.join(__dirname, "src", "js", "options.js"),
-    background: path.join(__dirname, "src", "js", "background.js")
+    popup: path.join(__dirname, "src", "js", "popup.ts"),
+    options: path.join(__dirname, "src", "js", "options.ts"),
+    background: path.join(__dirname, "src", "js", "background.ts")
   },
   output: {
     path: path.join(__dirname, "build"),
@@ -30,6 +30,11 @@ var options = {
   },
   module: {
     rules: [
+      {
+        test: /\.ts$/,
+        loader: "awesome-typescript-loader",
+        exclude: /node_modules/
+      },
       {
         test: /\.css$/,
         loader: "style-loader!css-loader",
@@ -44,12 +49,19 @@ var options = {
         test: /\.html$/,
         loader: "html-loader",
         exclude: /node_modules/
+      },
+      {
+        enforce: "pre",
+        test: /\.js$/,
+        loader: "source-map-loader"
       }
     ]
   },
   resolve: {
-    alias: alias
+    alias: alias,
+    extensions: ['.ts', '.js', '.json']
   },
+  devtool: "source-map",
   plugins: [
     // clean the build folder
     new CleanWebpackPlugin(["build"]),
